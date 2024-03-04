@@ -6,7 +6,7 @@ async function getWorks() {
   return worksJson;
 }
 
-async function displayWorks() {
+/*async function displayWorks() {
   const works = await getWorks();
   const galleryElement = document.querySelector(".gallery");
   for (let travaux of works) {
@@ -19,19 +19,50 @@ async function displayWorks() {
     figureElement.appendChild(figcaptionElement);
     galleryElement.appendChild(figureElement);
   }
+}*/
+displayFilteredWorks();
+
+async function getCategories() {
+  const categories = await fetch("http://localhost:5678/api/categories");
+  console.log(categories);
+  const categoriesJson = await categories.json();
+  console.log(categoriesJson);
+  return categoriesJson;
 }
-displayWorks();
+
+async function displayCategories() {
+  const categories = await getCategories();
+  categories.unshift({ id: 0, name: "Tous" });
+  const filtersContainer = document.querySelector("#filter-container");
+  for (let cat of categories) {
+    const filterElement = document.createElement("div");
+    filterElement.classList.add("filter-item");
+    filterElement.innerText = cat.name;
+    filterElement.addEventListener("click", () => {
+      filterWorks(cat.id);
+    });
+    filtersContainer.appendChild(filterElement);
+  }
+}
+displayCategories();
 
 async function filterWorks(categoryId) {
   const works = await getWorks();
+  if (categoryId === 0) {
+    displayFilteredWorks(works);
+    return;
+  }
   const filteredWorks = works.filter(
     (travail) => travail.category.id === categoryId
   );
   displayFilteredWorks(filteredWorks);
 }
 
-async function displayFilteredWorks(filteredWorks) {
+async function displayFilteredWorks(filteredWorks = null) {
   const galleryElement = document.querySelector(".gallery");
+  if (filteredWorks == null) {
+    filteredWorks = await getWorks();
+  }
   galleryElement.innerHTML = "";
   for (let travail of filteredWorks) {
     const figureElement = document.createElement("figure");
@@ -44,37 +75,3 @@ async function displayFilteredWorks(filteredWorks) {
     galleryElement.appendChild(figureElement);
   }
 }
-
-document.addEventListener("DOMContentLoaded", async () => {
-  const works = await getWorks();
-  const categories = new Set(works.map((travail) => travail.category));
-  const filterContainerElement = document.querySelector("#filter-container");
-
-  categories.forEach((category) => {
-    const checkboxElement = document.createElement("input");
-    checkboxElement.type = "checkbox";
-    checkboxElement.id = category;
-    checkboxElement.name = category;
-    checkboxElement.value = category;
-
-    const labelElement = document.createElement("label");
-    labelElement.htmlFor = category;
-    labelElement.appendChild(document.createTextNode(category));
-
-    filterContainerElement.appendChild(checkboxElement);
-    filterContainerElement.appendChild(labelElement);
-
-    checkboxElement.addEventListener("change", () => {
-      const selectedcategories = Array.from(
-        filterContainerElement.querySelectorAll(
-          'input[type="checkbox"]:checked'
-        )
-      ).map((checkbox) => checkbox.value);
-      const filteredWorks = works.filter((travail) =>
-        selectedcategories.includes(travail.category.name)
-      );
-      displayFilteredWorks(filteredWorks);
-    });
-  });
-  displayFilteredWorks(works);
-});

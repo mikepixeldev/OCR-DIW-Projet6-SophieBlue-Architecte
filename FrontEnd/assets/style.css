@@ -205,23 +205,6 @@ li:hover {
   margin-bottom: 1em;
 }
 
-#filter-container {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  margin: 20px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-#filter-container label {
-  margin: 5px 0;
-}
-
-#filter-container input[type="checkbox"] {
-  margin-right: 10px;
-}
-
 .gallery {
   width: 100%;
   display: grid;
@@ -233,30 +216,36 @@ li:hover {
 .gallery img {
   width: 100%;
 }
-#contact {
+#contact,
+#login {
   width: 50%;
   margin: auto;
 }
-#contact > * {
+#contact > *,
+#login > * {
   text-align: center;
 }
-#contact h2 {
+#contact h2,
+#login h2 {
   margin-bottom: 20px;
 }
-#contact form {
+#contact form,
+#login form {
   text-align: left;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
 }
 
-#contact input {
+#contact input,
+#login input {
   height: 50px;
   font-size: 1.2em;
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
-#contact label {
+#contact label,
+#login label {
   margin: 2em 0 1em 0;
 }
 #contact textarea {
@@ -279,4 +268,21 @@ footer nav ul {
   display: flex;
   justify-content: flex-end;
   margin: 2em;
+}
+
+#filter-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.filter-item {
+  display: inline-flex;
+  border: 1px solid #1d6154;
+  color: #1d6154;
+  padding: 10px;
+  border-radius: 20px;
 }
