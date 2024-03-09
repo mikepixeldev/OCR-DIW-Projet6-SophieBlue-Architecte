@@ -20,7 +20,6 @@ async function getWorks() {
     galleryElement.appendChild(figureElement);
   }
 }*/
-displayFilteredWorks();
 
 async function getCategories() {
   const categories = await fetch("http://localhost:5678/api/categories");
@@ -44,7 +43,6 @@ async function displayCategories() {
     filtersContainer.appendChild(filterElement);
   }
 }
-displayCategories();
 
 async function filterWorks(categoryId) {
   const works = await getWorks();
@@ -75,3 +73,44 @@ async function displayFilteredWorks(filteredWorks = null) {
     galleryElement.appendChild(figureElement);
   }
 }
+function isConnected() {
+  return sessionStorage.getItem("token") !== null;
+}
+function handleLoginButton() {
+  const loginButton = document.querySelector("#login-button");
+  if (isConnected()) {
+    loginButton.innerText = "logout";
+    loginButton.addEventListener("click", () => {
+      sessionStorage.removeItem("token");
+      window.location.href = "./index.html";
+    });
+  } else {
+    loginButton.innerText = "login";
+    loginButton.addEventListener("click", () => {
+      window.location.href = "./login.html";
+    });
+  }
+}
+
+function handleAdminElements() {
+  const adminElements = document.querySelectorAll(".admin-element");
+  console.log(isConnected());
+  if (isConnected()) {
+    adminElements.forEach((element) => {
+      element.classList.remove("hidden");
+    });
+  } else {
+    adminElements.forEach((element) => {
+      element.classList.add("hidden");
+    });
+  }
+}
+
+function handleModal() {}
+
+(function main() {
+  handleLoginButton();
+  displayFilteredWorks();
+  displayCategories();
+  handleAdminElements();
+})();
