@@ -129,17 +129,52 @@ table {
 }
 /** end reset css**/
 body {
-  max-width: 1140px;
-  margin: auto;
+  margin: 0 auto;
   font-family: "Work Sans";
   font-size: 14px;
   background-color: #fffef8;
 }
 header {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  margin: 50px 0;
+  margin-bottom: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  width: auto;
 }
+
+#header-edit {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  margin-top: 0;
+  background-color: black;
+  color: white;
+}
+
+.edit {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+#header-top {
+  display: flex;
+  justify-content: space-between;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+  padding: 0 150px;
+  width: 1140px;
+}
+
+main {
+  width: 950px;
+  margin: auto;
+  padding: 0 245px;
+}
+
 section {
   margin: 50px 0;
 }
@@ -286,7 +321,7 @@ footer {
 footer nav ul {
   display: flex;
   justify-content: flex-end;
-  margin: 2em;
+  margin-right: 107px;
 }
 
 #filter-container {
@@ -316,3 +351,43 @@ footer nav ul {
 .hidden {
   display: none !important;
 }
+
+/* Modal */
+
+.modal {
+  position: fixed;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+}
+
+.modal-wrapper {
+  position: relative;
+  overflow: auto;
+  width: 600px;
+  max-width: calc(100% - 40px);
+  max-height: calc(100vh - 20px);
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.js-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Fin Modal */

@@ -11,22 +11,30 @@
 		rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script src="./assets/js/accueil.js" async defer></script>
+	<script src="./assets/js/accueil.js" defer></script>
 	<script src="./assets/js/modal.js" async defer></script>
+	<script src="https://kit.fontawesome.com/3c74274841.js" crossorigin="anonymous"></script>
 
 </head>
 
 <body>
 	<header>
-		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
-		<nav>
-			<ul>
-				<li><a href="#portfolio">projets</a></li>
-				<li><a href="#contact">contact</a></li>
-				<li class="active"><a id="login-button" href="./login.html">login</a></li>
-				<li id="instagram"><img src="./assets/icons/instagram.png" alt="Instagram"></li>
-			</ul>
-		</nav>
+		<div id="header-edit">
+			<div class="edit"><i class="fa-regular fa-pen-to-square"></i>
+				<p>Mode édition</p>
+			</div>
+		</div>
+		<div id="header-top">
+			<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+			<nav>
+				<ul>
+					<li><a href="#portfolio">projets</a></li>
+					<li><a href="#contact">contact</a></li>
+					<li class="active"><a id="login-button" href="./login.html">login</a></li>
+					<li id="instagram"><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+				</ul>
+			</nav>
+		</div>
 	</header>
 	<main>
 		<section id="introduction">
@@ -45,7 +53,7 @@
 			</article>
 		</section>
 		<section id="portfolio">
-			<h2>Mes Projets <span id="edit-works" class="admin-element hidden">modifier</span></h2>
+			<h2>Mes Projets <span id="edit-works">modifier</span></h2>
 			<div id="filter-container">
 				<!-- Galerie gérée par JavaScript -->
 			</div>
@@ -53,6 +61,19 @@
 			<div class="gallery">
 				<!-- Galerie gérée par JavaScript -->
 			</div>
+
+			<!-- Modale -->
+
+			<div class="modal" id="modal" aria-hidden="true" style="display: none;">
+				<div class="modal-wrapper js-modal-stop">
+					<button class="js-modal-close">X</button>
+					<!-- Contenu de la modale -->
+					<h2>Galerie photo</h2>
+					<!-- ajout des médias -->
+				</div>
+			</div>
+
+
 		</section>
 		<section id="contact">
 			<h2>Contact</h2>

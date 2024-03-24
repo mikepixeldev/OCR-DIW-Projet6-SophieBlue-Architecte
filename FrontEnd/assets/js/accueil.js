@@ -78,6 +78,7 @@ function isConnected() {
 }
 function handleLoginButton() {
   const loginButton = document.querySelector("#login-button");
+  console.log(loginButton);
   if (isConnected()) {
     loginButton.innerText = "logout";
     loginButton.addEventListener("click", () => {
@@ -86,6 +87,7 @@ function handleLoginButton() {
     });
   } else {
     loginButton.innerText = "login";
+
     loginButton.addEventListener("click", () => {
       window.location.href = "./login.html";
     });
