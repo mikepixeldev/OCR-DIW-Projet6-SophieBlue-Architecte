@@ -44,13 +44,13 @@
 				<img src="./assets/images/sophie-bluel.png" alt="">
 			</figure>
 			<article>
-				<h2>Designer d'espace</h2>
+				<h2>Designer d’espace</h2>
 				<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison
 					finale du chantier.</p>
 				<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les
 					couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du
 					chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
-				<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG,
+				<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG,
 					décorateur(trice)</p>
 			</article>
 		</section>
@@ -71,9 +71,8 @@
 				<!-- Galerie gérée par JavaScript -->
 			</div>
 
-			<!-- Modale -->
-
-			<div class="modal" id="modal" aria-hidden="true" style="display: none;">
+			<!-- Modale galerie -->
+			<section class="modal" id="modal" aria-hidden="true" style="display: none;">
 				<div class="modal-wrapper js-modal-stop">
 					<button class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
 					<!-- Contenu de la modale -->
@@ -81,61 +80,43 @@
 					<!-- ajout des médias -->
 
 					<div class="modal-content">
-						<!--
-						<figure class="image-container">
-							<img src="assets/images/abajour-tahina.png" alt="Abajour Tahina">
-							<span class="icon-background"><i class="fa-solid fa-trash-can icon-overlay"></i></span>
-						</figure>
-						<figure class="image-container">
-							<img src="assets/images/appartement-paris-v.png" alt="Appartement Paris V">
-							<span class="icon-background"><i class="fa-solid fa-trash-can icon-overlay"></i></span>
-						</figure>
-						<figure class="image-container">
-							<img src="assets/images/restaurant-sushisen-londres.png"
-								alt="Restaurant Sushisen - Londres">
-							<span class="icon-background"><i class="fa-solid fa-trash-can icon-overlay"></i></span>
-						</figure>
-						<figure class="image-container">
-							<img src="assets/images/la-balisiere.png" alt="Villa “La Balisiere” - Port Louis">
-							<span class="icon-background"><i class="fa-solid fa-trash-can icon-overlay"></i></span>
-						</figure>
-						<figure class="image-container">
-							<img src="assets/images/structures-thermopolis.png" alt="Structures Thermopolis">
-							<span class="icon-background"><i class="fa-solid fa-trash-can icon-overlay"></i></span>
-						</figure>
-						<figure class="image-container">
-							<img src="assets/images/appartement-paris-x.png" alt="Appartement Paris X">
-							<span class="icon-background"><i class="fa-solid fa-trash-can icon-overlay"></i></span>
-						</figure>
-						<figure class="image-container">
-							<img src="assets/images/le-coteau-cassis.png" alt="Pavillon “Le coteau” - Cassis">
-							<span class="icon-background"><i class="fa-solid fa-trash-can icon-overlay"></i></span>
-						</figure>
-						<figure class="image-container">
-							<img src="assets/images/villa-ferneze.png" alt="Villa Ferneze - Isola d’Elba">
-							<span class="icon-background"><i class="fa-solid fa-trash-can icon-overlay"></i></span>
-						</figure>
-						<figure class="image-container">
-							<img src="assets/images/appartement-paris-xviii.png" alt="Appartement Paris XVIII">
-							<span class="icon-background"><i class="fa-solid fa-trash-can icon-overlay"></i></span>
-						</figure>
-						<figure class="image-container">
-							<img src="assets/images/bar-lullaby-paris.png" alt="Bar “Lullaby” - Paris">
-							<span class="icon-background"><i class="fa-solid fa-trash-can icon-overlay"></i></span>
-						</figure>
-						<figure class="image-container">
-							<img src="assets/images/hotel-first-arte-new-delhi.png" alt="Hotel First Arte - New Delhi">
-							<span class="icon-background"><i class="fa-solid fa-trash-can icon-overlay"></i></span>
-						</figure>
-					-->
+						<!-- Galerie gérée par JavaScript -->
 					</div>
 					<!-- Fin des médias -->
 					<div class="border-line"></div>
 					<button type="button" id="addPhotoButton">Ajouter une photo</button>
 
 				</div>
-			</div>
-			<!-- Fin de la modale -->
+			</section>
+			<!-- Fin de la modale galerie -->
+
+			<!-- Modale ajout photo -->
+			<section class="modal" id="modal" aria-hidden="true" style="display: none;">
+				<div class="modal-wrapper js-modal-stop">
+					<button class="js-modal-back"><i class="fa-solid fa-arrow-left"></i></i></button>
+					<button class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
+
+					<h3>Ajout photo</h3>
+					<!-- Formulaire d'ajout photo -->
+					<form id="formAddWork">
+						<div class="containerAddPhoto">
+							<i class="fa-regular fa-image"></i>
+							<label for="file" class="labelFile">+ Ajouter photo</label>
+							<p>jpg, png : 4mo max</p>
+							<input type="file" name="image" id="file" accept="image/jpg, image/png" required>
+							<img id="previewImage" src="#" alt="Aperçu de l'image">
+						</div>
+						<label for="title">Titre</label>
+						<input type="text" name="title" id="title" required>
+						<label for="categoryInput">Catégorie</label>
+						<select id="categoryInput" name="category" required>
+						</select>
+						<div class="border-line"></div>
+						<button type="submit" id="addWorkButton">Valider</button>
+					</form>
+				</div>
+			</section>
+			<!-- Fin de la modale ajout photo -->
 
 
 		</section>
