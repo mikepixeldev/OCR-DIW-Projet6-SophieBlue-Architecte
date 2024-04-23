@@ -72,7 +72,7 @@
 			</div>
 
 			<!-- Modale galerie -->
-			<section class="modal" id="modal" aria-hidden="true" style="display: none;">
+			<section class="modal" id="modalGallery" aria-hidden="true" style="display: none;">
 				<div class="modal-wrapper js-modal-stop">
 					<button class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
 					<!-- Contenu de la modale -->
@@ -90,34 +90,34 @@
 			</section>
 			<!-- Fin de la modale galerie -->
 
-			<!-- Modale ajout photo -->
-			<section class="modal" id="modal" aria-hidden="true" style="display: none;">
+			<!-- Modale ajout travail -->
+			<section class="modal" id="modalAddWork" aria-hidden="true" style="display: none;">
 				<div class="modal-wrapper js-modal-stop">
 					<button class="js-modal-back"><i class="fa-solid fa-arrow-left"></i></i></button>
 					<button class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
 
 					<h3>Ajout photo</h3>
-					<!-- Formulaire d'ajout photo -->
+					<!-- Formulaire d'ajout travail -->
 					<form id="formAddWork">
 						<div class="containerAddPhoto">
 							<i class="fa-regular fa-image"></i>
 							<label for="file" class="labelFile">+ Ajouter photo</label>
 							<p>jpg, png : 4mo max</p>
-							<input type="file" name="image" id="file" accept="image/jpg, image/png" required>
-							<img id="previewImage" src="#" alt="Aperçu de l'image">
+							<input type="file" name="image" id="file" accept="image/jpg, image/png" required
+								style="display: none;">
+							<img id="previewImage" src="#" alt="Aperçu de l'image" style="display: none;">
 						</div>
 						<label for="title">Titre</label>
 						<input type="text" name="title" id="title" required>
 						<label for="categoryInput">Catégorie</label>
-						<select id="categoryInput" name="category" required>
-						</select>
+						<select id="categoryInput" name="category" required></select>
 						<div class="border-line"></div>
 						<button type="submit" id="addWorkButton">Valider</button>
 					</form>
+
 				</div>
 			</section>
-			<!-- Fin de la modale ajout photo -->
-
+			<!-- Fin de la modale ajout travail -->
 
 		</section>
 		<section id="contact">
@@ -134,11 +134,10 @@
 			</form>
 		</section>
 	</main>
-
 	<footer>
 		<nav>
 			<ul>
-				<li>Mentions Légales</li>
+				<li><a href="#">Mentions Légales</a></li>
 			</ul>
 		</nav>
 	</footer>
