@@ -1,4 +1,4 @@
-# Sophie Blue - Architecte d'intérieur - Projet 6 - OpenClassRooms
+# Sophie Bluel - Architecte d'intérieur - Projet 6 - OpenClassRooms
 
 ## Introduction :
 
@@ -6,7 +6,7 @@ Ce projet est dans le cadre de la formation intégrateur web d’OpenClassRooms.
 
 ## Description :
 
-Dans ce projet fictif, j'ai travaillé sur le site portfolio pour Sophie Blue, une architecte d'intérieur. Le projet incluait le développement de nouvelles fonctionnalités et l'optimisation du code existant pour une meilleure performance et accessibilité.
+Dans ce projet fictif, j'ai travaillé sur le site portfolio pour Sophie Bluel, une architecte d'intérieur. Le projet incluait le développement de nouvelles fonctionnalités et l'optimisation du code existant pour une meilleure performance et accessibilité.
 
 ## Technologies & Langages :
 
