@@ -2,7 +2,7 @@
 
 ## Introduction :
 
-Ce projet est dans le cadre de la formation intégrateur web d’OpenClassRooms.
+Ce projet est dans le cadre de la formation développeur intégrateur web d’OpenClassRooms.
 
 ## Description :
 
