@@ -15,7 +15,7 @@ async function displayWorksInModal() {
     // Vérifie si un élément pour ce travail existe déjà pour éviter de le créer à nouveau
     let workElement = document.getElementById(`work-${work.id}`);
     if (!workElement) {
-      // Crée un élément figure pour chaque travail
+      // Crée un élément figure pour chaque travail si non existant
       const figureElement = document.createElement("figure");
       figureElement.classList.add("image-container");
       figureElement.id = `work-${work.id}`;
@@ -25,22 +25,22 @@ async function displayWorksInModal() {
       imgElement.src = work.imageUrl;
       imgElement.alt = work.title;
 
-      // Crée un conteneur pour l'icône de suppression
+      // Prépare l'icône de suppression et son conteneur
       const spanElement = document.createElement("span");
       spanElement.classList.add("icon-background");
-
       // Crée une icône de suppression et y attache un gestionnaire d'événements
       const iconElement = document.createElement("i");
       iconElement.classList.add("fa-solid", "fa-trash-can", "icon-overlay");
-      iconElement.addEventListener("click", function () {
-        deleteWork(work.id); // Appelle deleteWork lorsque l'icône est cliquée
+      iconElement.addEventListener("click", function (event) {
+        event.preventDefault(); // Empêche le rechargement de la page
+        deleteWork(work.id); // Supprime le travail lors du clic
       });
 
-      // Assemble les éléments de l'image et de l'icône dans le figure
+      // Assemble et ajoute les éléments à la modale
       spanElement.appendChild(iconElement);
       figureElement.appendChild(imgElement);
       figureElement.appendChild(spanElement);
-      modalContent.appendChild(figureElement); // Ajoute le figure complet au contenu de la modale
+      modalContent.appendChild(figureElement);
     }
   });
 }
@@ -59,32 +59,29 @@ async function deleteWork(workId) {
     });
 
     // Si la réponse n'est pas OK, lance une exception
-    if (!response.ok) {
-      throw new Error("Failed to delete work");
-    }
-    globalWorks = null; // Réinitialise la cache locale après la suppression
-    displayWorksInModal(); // Rafraîchit l'affichage pour montrer les changements
+    if (!response.ok) throw new Error("Failed to delete work"); // Gère les réponses non réussies
+    globalWorks = null; // Réinitialise le cache des travaux
+    displayWorksInModal(); // Met à jour l'affichage sans rechargement de la page
   } catch (error) {
-    // Log l'erreur si la suppression échoue
-    console.error("Erreur lors de la suppression:", error);
+    console.error("Erreur lors de la suppression:", error); // Log en cas d'erreur
   }
 }
 
-// Ajoute un écouteur d'événements pour rafraîchir la galerie lors du clic sur un bouton
+// Rafraîchit l'affichage des travaux quand nécessaire
 document
   .getElementById("edit-works")
   .addEventListener("click", displayWorksInModal);
 
-///////////////////////// FONCTIONS POUR LE FORMULAIRE D'AJOUT DES TRAVAUX //////////////////////////
+/////////////////////// FONCTIONS POUR LE FORMULAIRE D'AJOUT DES TRAVAUX //////////////////////////
 
 // Soumet les données du formulaire pour créer un nouveau travail
 async function submitAddWorkForm() {
   const form = document.getElementById("formAddWork");
-  const submitButton = form.querySelector("input[type='submit']"); // Assure-toi que c'est bien le sélecteur correct
+  const submitButton = form.querySelector("input[type='submit']"); // Confirme le sélecteur du bouton
 
   form.addEventListener("submit", async function (event) {
-    event.preventDefault();
-    submitButton.disabled = true; // Désactive le bouton dès que le formulaire est soumis
+    event.preventDefault(); // Empêche le rechargement de la page lors de la soumission
+    submitButton.disabled = true; // Désactive le bouton dès que le formulaire est soumis pour éviter les soumissions multiples
 
     const formData = new FormData(form);
 
@@ -93,22 +90,23 @@ async function submitAddWorkForm() {
         method: "POST",
         body: formData,
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`, // Authentification avec le token
         },
       });
 
-      if (!response.ok)
+      if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const result = await response.json();
       console.log("Success:", result);
-      displayFilteredWorks();
-      closeModal();
+      displayFilteredWorks(); // Rafraîchit l'affichage des travaux
+      closeModal(); // Ferme la modale après la soumission réussie
     } catch (error) {
       console.error("Error:", error);
-      submitButton.disabled = false; // Réactive le bouton en cas d'erreur
+      submitButton.disabled = false; // Réactive le bouton en cas d'erreur pour permettre une nouvelle tentative
     } finally {
-      globalWorks = null; // Réinitialise le cache après la soumission
+      globalWorks = null; // Réinitialise le cache après la soumission pour s'assurer que les données sont à jour
       submitButton.disabled = false; // Réactive le bouton après la soumission
     }
   });
@@ -122,21 +120,18 @@ async function loadCategories() {
     const response = await fetch("http://localhost:5678/api/categories");
     const categories = await response.json();
 
-    // Ajoute une option par défaut pour inciter à la sélection
     const defaultOption = document.createElement("option");
-    defaultOption.textContent = "Choisissez une catégorie";
+    defaultOption.textContent = "Choisissez une catégorie"; // Option par défaut
     defaultOption.value = "";
     categorySelect.appendChild(defaultOption);
 
-    // Assure que l'option par défaut est sélectionnée initialement
-    categorySelect.value = "";
+    categorySelect.value = ""; // Sélectionne l'option par défaut initialement
 
-    // Ajoute des options pour chaque catégorie récupérée depuis l'API
     categories.forEach((category) => {
       const option = document.createElement("option");
       option.value = category.id;
       option.textContent = category.name;
-      categorySelect.appendChild(option);
+      categorySelect.appendChild(option); // Ajoute chaque catégorie au sélecteur
     });
   } catch (error) {
     console.error("Erreur lors du chargement des catégories:", error);
@@ -147,7 +142,7 @@ async function loadCategories() {
 function setupFormSubmission() {
   const formAddWork = document.getElementById("formAddWork");
   formAddWork.addEventListener("submit", async (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Empêche le rechargement de la page lors de la soumission
     const formData = new FormData(formAddWork);
 
     try {
@@ -155,7 +150,7 @@ function setupFormSubmission() {
         method: "POST",
         body: formData,
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`, // Authentification avec le token
         },
       });
 
@@ -205,11 +200,11 @@ document.addEventListener("DOMContentLoaded", () => {
       categorySelect.value &&
       fileInput.files.length > 0
     ) {
-      addWorkButton.disabled = false;
+      addWorkButton.disabled = false; // Active le bouton si toutes les conditions sont remplies
       addWorkButton.style.backgroundColor = "#1d6154";
       addWorkButton.style.color = "white";
     } else {
-      addWorkButton.disabled = true;
+      addWorkButton.disabled = true; // Désactive le bouton si une condition n'est pas remplie
       addWorkButton.style.backgroundColor = "#a7a7a7";
       addWorkButton.style.color = "white";
     }

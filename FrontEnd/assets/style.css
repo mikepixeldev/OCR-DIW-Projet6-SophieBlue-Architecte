@@ -330,11 +330,22 @@ footer nav ul {
   padding: 10px;
 }
 
+/* Style pour les boutons de filtre normaux */
 .filter-item {
   display: inline-flex;
   border: 1px solid #1d6154;
   color: #1d6154;
-  padding: 10px;
+  padding: 9px 1em;
+  border-radius: 20px;
+}
+
+/* Style pour l'éléments de filtre actif */
+.filter-item.selected {
+  display: inline-flex;
+  border: 1px solid #1d6154;
+  background-color: #1d6154;
+  color: white;
+  padding: 9px 1em;
   border-radius: 20px;
 }
 

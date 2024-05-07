@@ -41,15 +41,25 @@ async function displayCategories() {
   // Ajoute une option "Tous" pour permettre l'affichage de tous les travaux.
   categories.unshift({ id: 0, name: "Tous" });
   const filtersContainer = document.querySelector("#filter-container");
-  for (let cat of categories) {
+  filtersContainer.innerHTML = ""; // Vide les filtres existants pour éviter les duplications lors de l'affichage
+
+  categories.forEach((cat) => {
     const filterElement = document.createElement("div");
     filterElement.classList.add("filter-item");
     filterElement.innerText = cat.name;
     filterElement.addEventListener("click", () => {
-      filterWorks(cat.id);
+      // Supprime la classe 'selected' de tous les éléments pour s'assurer que seul l'élément actif l'ait
+      document
+        .querySelectorAll(".filter-item")
+        .forEach((item) => item.classList.remove("selected"));
+      filterElement.classList.add("selected"); // Ajoute la classe 'selected' à l'élément cliqué
+      filterWorks(cat.id); // Filtre les travaux en fonction de la catégorie sélectionnée
     });
     filtersContainer.appendChild(filterElement);
-  }
+  });
+
+  // Sélectionne par défaut le premier élément 'Tous'
+  filtersContainer.firstChild.classList.add("selected");
 }
 
 // Fonction pour filtrer les travaux par catégorie.

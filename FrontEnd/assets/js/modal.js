@@ -42,7 +42,7 @@ const openModal = function (e) {
 
 // Ferme la modale et nettoie les écouteurs d'événements
 const closeModal = function (e) {
-  if (e && e.preventDefault) e.preventDefault();
+  if (e && e.preventDefault) e.preventDefault(); // Empêche le comportement par défaut lors de la fermeture
   if (!modal) return;
 
   modal.style.display = "none";
