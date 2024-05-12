@@ -42,6 +42,7 @@ const openModal = function (e) {
 
 // Ferme la modale et nettoie les écouteurs d'événements
 const closeModal = function (e) {
+  console.log("closeModal");
   if (e && e.preventDefault) e.preventDefault(); // Empêche le comportement par défaut lors de la fermeture
   if (!modal) return;
 
@@ -101,6 +102,8 @@ if (
 // Fonction pour ouvrir la modale d'ajout de travail
 function openAddWorkModal() {
   const modalAddWork = document.getElementById("modalAddWork");
+  document.getElementById("modalGallery").style.display = "none"; // Cache la modale principale
+  modal = modalAddWork; // Modifie la référence de la modale active
   modalAddWork.style.display = "flex"; // Affiche la modale
   modalAddWork.setAttribute("aria-hidden", "false"); // Accessibilité : rend la modale visible aux technologies d'assistance
   modalAddWork.setAttribute("aria-modal", "true"); // Indique que c'est une modale

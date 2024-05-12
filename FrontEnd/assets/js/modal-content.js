@@ -62,6 +62,7 @@ async function deleteWork(workId) {
     if (!response.ok) throw new Error("Failed to delete work"); // Gère les réponses non réussies
     globalWorks = null; // Réinitialise le cache des travaux
     displayWorksInModal(); // Met à jour l'affichage sans rechargement de la page
+    displayFilteredWorks(); // Rafraîchit l'affichage des travaux
   } catch (error) {
     console.error("Erreur lors de la suppression:", error); // Log en cas d'erreur
   }
@@ -77,7 +78,7 @@ document
 // Soumet les données du formulaire pour créer un nouveau travail
 async function submitAddWorkForm() {
   const form = document.getElementById("formAddWork");
-  const submitButton = form.querySelector("input[type='submit']"); // Confirme le sélecteur du bouton
+  const submitButton = form.querySelector("button[type='submit']"); // Confirme le sélecteur du bouton
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault(); // Empêche le rechargement de la page lors de la soumission
@@ -100,8 +101,8 @@ async function submitAddWorkForm() {
 
       const result = await response.json();
       console.log("Success:", result);
-      displayFilteredWorks(); // Rafraîchit l'affichage des travaux
-      closeModal(); // Ferme la modale après la soumission réussie
+      filterWorks(0); // Rafraîchit l'affichage des travaux
+      closeModal(event); // Ferme la modale après la soumission réussie
     } catch (error) {
       console.error("Error:", error);
       submitButton.disabled = false; // Réactive le bouton en cas d'erreur pour permettre une nouvelle tentative
@@ -111,7 +112,6 @@ async function submitAddWorkForm() {
     }
   });
 }
-document.addEventListener("DOMContentLoaded", submitAddWorkForm); // Attache la fonction au chargement du document
 
 // Charge les catégories depuis l'API et les ajoute au sélecteur de catégories dans le formulaire
 async function loadCategories() {
@@ -159,9 +159,10 @@ function setupFormSubmission() {
       }
 
       const result = await response.json();
-      console.log("Projet ajouté avec succès:", result);
-      closeModal(); // Ferme la modale après la soumission
       displayWorksInModal(); // Met à jour l'affichage des travaux
+      filterWorks(0); // Rafraîchit l'affichage des travaux
+      console.log("Projet ajouté avec succès:", result);
+      closeModal(event); // Ferme la modale après la soumission
     } catch (error) {
       console.error("Erreur lors de l'ajout du projet:", error);
     }
@@ -227,6 +228,21 @@ function setupModalButtons() {
   const backButton = document.querySelector(".js-modal-back");
   backButton.removeEventListener("click", backToGalleryModal);
   backButton.addEventListener("click", backToGalleryModal);
+}
+
+// Ferme la modale d'ajout de travail
+function setupCloseButtonForAddWorkModal() {
+  const closeButton = document.querySelector(".js-modal-close");
+  closeButton.addEventListener("click", closeModal);
+}
+
+function setupBackgroundClickForAddWorkModal() {
+  const modal = document.querySelector(".modal");
+  modal.addEventListener("click", function (event) {
+    if (event.target === modal) {
+      closeModal();
+    }
+  });
 }
 
 // S'assure que les boutons sont configurés dès que le DOM est chargé
