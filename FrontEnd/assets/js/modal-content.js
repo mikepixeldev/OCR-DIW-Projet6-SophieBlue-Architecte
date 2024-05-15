@@ -61,8 +61,8 @@ async function deleteWork(workId) {
     // Si la réponse n'est pas OK, lance une exception
     if (!response.ok) throw new Error("Failed to delete work"); // Gère les réponses non réussies
     globalWorks = null; // Réinitialise le cache des travaux
-    displayWorksInModal(); // Met à jour l'affichage sans rechargement de la page
-    displayFilteredWorks(); // Rafraîchit l'affichage des travaux
+    await displayWorksInModal(); // Met à jour l'affichage sans rechargement de la page
+    await displayFilteredWorks(); // Rafraîchit l'affichage des travaux
   } catch (error) {
     console.error("Erreur lors de la suppression:", error); // Log en cas d'erreur
   }
@@ -101,7 +101,7 @@ async function submitAddWorkForm() {
 
       const result = await response.json();
       console.log("Success:", result);
-      filterWorks(0); // Rafraîchit l'affichage des travaux
+      await filterWorks(0); // Rafraîchit l'affichage des travaux
       closeModal(event); // Ferme la modale après la soumission réussie
     } catch (error) {
       console.error("Error:", error);
@@ -159,8 +159,8 @@ function setupFormSubmission() {
       }
 
       const result = await response.json();
-      displayWorksInModal(); // Met à jour l'affichage des travaux
-      filterWorks(0); // Rafraîchit l'affichage des travaux
+      await displayWorksInModal(); // Met à jour l'affichage des travaux
+      await filterWorks(0); // Rafraîchit l'affichage des travaux
       console.log("Projet ajouté avec succès:", result);
       closeModal(event); // Ferme la modale après la soumission
     } catch (error) {
@@ -195,6 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const fileInput = document.getElementById("file");
   const addWorkButton = document.getElementById("addWorkButton");
 
+  // Fonction pour mettre à jour l'état du bouton de soumission
   function updateButtonState() {
     if (
       titleInput.value.trim() !== "" &&
@@ -211,11 +212,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Ajoute des écouteurs d'événements pour mettre à jour l'état du bouton lors des changements
   titleInput.addEventListener("input", updateButtonState);
   categorySelect.addEventListener("change", updateButtonState);
   fileInput.addEventListener("change", updateButtonState);
 
-  // Initial check on load
+  // Vérification initiale de l'état du bouton lors du chargement
   updateButtonState();
 });
 
@@ -236,24 +238,24 @@ function setupCloseButtonForAddWorkModal() {
   closeButton.addEventListener("click", closeModal);
 }
 
+// Configure la fermeture en cliquant à l'extérieur pour toutes les modales
 function setupBackgroundClickForAddWorkModal() {
-  const modal = document.querySelector(".modal");
-  modal.addEventListener("click", function (event) {
-    if (event.target === modal) {
-      closeModal();
-    }
+  const modals = document.querySelectorAll(".modal");
+
+  modals.forEach((element) => {
+    element.addEventListener("click", function (event) {
+      if (event.target === element) {
+        closeModal();
+      }
+    });
   });
 }
 
 // S'assure que les boutons sont configurés dès que le DOM est chargé
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   setupModalButtons(); // Configure déjà les boutons pour les autres modales
   setupCloseButtonForAddWorkModal(); // Configure le bouton de fermeture pour modalAddWork
   setupBackgroundClickForAddWorkModal(); // Configure la fermeture en cliquant à l'extérieur pour modalAddWork
-});
-
-// Initialise les fonctions au chargement de la page
-document.addEventListener("DOMContentLoaded", () => {
-  loadCategories(); // Charge les catégories disponibles
+  await loadCategories(); // Charge les catégories disponibles
   setupFormSubmission(); // Configure la soumission du formulaire
 });
