@@ -4,6 +4,16 @@ const focusableSelector = "button, a, input, textarea"; // Sélecteurs pour él�
 let focusables = [];
 let lastFocusedElement = null;
 
+// Déclaration des variables pour les différentes modales
+const modalContent = document.getElementById("modalContent");
+const modalGallery = document.querySelector(".modalGallery");
+const modalPortfolio = document.querySelector(".modalPortfolio");
+const modalAddWorks = document.querySelector(".modalAddWorks");
+
+// Variables pour le formulaire
+const inputFile = document.querySelector("#file");
+const previewImage = document.getElementById("previewImage");
+
 // Flag pour vérifier si la configuration initiale de la modale a été effectuée
 let isModalSetup = false;
 
@@ -11,7 +21,11 @@ let isModalSetup = false;
 function setupModalOnce() {
   if (!isModalSetup) {
     setupModalButtons(); // Configure les interactions des boutons dans la modale
-    document.getElementById("edit-works").addEventListener("click", openModal);
+    const editWorksButton = document.getElementById("edit-works");
+    if (editWorksButton) {
+      editWorksButton.addEventListener("click", openModal);
+      editWorksButton.setAttribute("data-modal-initialized", "true");
+    }
     isModalSetup = true; // Marque la modale comme configurée
   }
 }
@@ -31,7 +45,10 @@ const openModal = function (e) {
   modal.setAttribute("aria-hidden", "false");
   modal.setAttribute("aria-modal", "true");
   document.addEventListener("keydown", handleKeyDown); // Écouteur pour la gestion du clavier
-  modal.querySelector(".js-modal-close").addEventListener("click", closeModal); // Bouton de fermeture
+  const closeModalButton = modal.querySelector(".js-modal-close");
+  if (closeModalButton) {
+    closeModalButton.addEventListener("click", closeModal); // Bouton de fermeture
+  }
   modal.addEventListener("click", closeModal); // Ferme la modale si on clique en dehors
   modal
     .querySelector(".modal-wrapper")
@@ -80,40 +97,45 @@ const handleKeyDown = function (e) {
   }
 };
 
-// Vérification pour éviter de configurer la modale plusieurs fois
-if (
-  !document.getElementById("edit-works").hasAttribute("data-modal-initialized")
-) {
-  document.getElementById("edit-works").addEventListener("click", openModal);
-  document
-    .getElementById("edit-works")
-    .setAttribute("data-modal-initialized", "true");
-}
-
-/////////////////////////// FONCTIONS CHANGEMENT DE MODALES //////////////////////////
-
+// Fonction pour mettre à jour le gestionnaire de la modale active
 function updateModalHandler(modalActive) {
   modal = modalActive; // Modifie la référence de la modale active
-  modal.querySelector(".js-modal-close").addEventListener("click", closeModal); // Bouton de fermeture
+  const closeModalButton = modal.querySelector(".js-modal-close");
+  if (closeModalButton) {
+    closeModalButton.addEventListener("click", closeModal); // Bouton de fermeture
+  }
 }
 
 // Fonction pour ouvrir la modale d'ajout de travail
 function openAddWorkModal() {
   const modalAddWork = document.getElementById("modalAddWork");
-  document.getElementById("modalGallery").style.display = "none"; // Cache la modale principale
+  const modalGallery = document.getElementById("modalGallery");
+  if (modalGallery) {
+    modalGallery.style.display = "none"; // Cache la modale principale
+  }
   updateModalHandler(modalAddWork);
-  modalAddWork.style.display = "flex"; // Affiche la modale
-  modalAddWork.setAttribute("aria-hidden", "false"); // Accessibilité : rend la modale visible aux technologies d'assistance
-  modalAddWork.setAttribute("aria-modal", "true"); // Indique que c'est une modale
+  if (modalAddWork) {
+    modalAddWork.style.display = "flex"; // Affiche la modale
+    modalAddWork.setAttribute("aria-hidden", "false"); // Accessibilité : rend la modale visible aux technologies d'assistance
+    modalAddWork.setAttribute("aria-modal", "true"); // Indique que c'est une modale
+    modalAddWork.addEventListener("click", closeModal); // Ajoute l'écouteur pour fermer en cliquant en dehors de la modale
+    modalAddWork
+      .querySelector(".modal-wrapper")
+      .addEventListener("click", stopPropagation); // Empêche la fermeture lors d'un clic à l'intérieur de la modale
+  }
 }
 
 // Fonction pour revenir à la galerie principale depuis la modale d'ajout
 function backToGalleryModal() {
   const modalAddWork = document.getElementById("modalAddWork");
-  modalAddWork.style.display = "none"; // Cache la modale d'ajout
+  if (modalAddWork) {
+    modalAddWork.style.display = "none"; // Cache la modale d'ajout
+  }
   const modalGallery = document.getElementById("modalGallery");
   updateModalHandler(modalGallery);
-  modalGallery.style.display = "flex"; // Affiche la modale principale
+  if (modalGallery) {
+    modalGallery.style.display = "flex"; // Affiche la modale principale
+  }
 }
 
 // Configure les boutons dans les modales pour éviter les écoutes multiples
@@ -122,12 +144,15 @@ function setupModalButtons() {
   const backButton = document.querySelector(".js-modal-back");
 
   // Enlève les écouteurs d'événements existants pour prévenir les duplications
-  addPhotoButton.removeEventListener("click", openAddWorkModal);
-  backButton.removeEventListener("click", backToGalleryModal);
+  if (addPhotoButton) {
+    addPhotoButton.removeEventListener("click", openAddWorkModal);
+    addPhotoButton.addEventListener("click", openAddWorkModal);
+  }
 
-  // Ajoute les nouveaux écouteurs d'événements
-  addPhotoButton.addEventListener("click", openAddWorkModal);
-  backButton.addEventListener("click", backToGalleryModal);
+  if (backButton) {
+    backButton.removeEventListener("click", backToGalleryModal);
+    backButton.addEventListener("click", backToGalleryModal);
+  }
 }
 
 // Initialisation des écouteurs d'événements au chargement de la page
@@ -142,6 +167,10 @@ async function displayWorksInModal() {
 
   // Sélectionne l'élément du DOM pour le contenu de la modale
   const modalContent = document.querySelector(".modal-content");
+  if (!modalContent) {
+    console.error("L'élément modal-content n'a pas été trouvé.");
+    return;
+  }
   // Vide le contenu précédent pour éviter les duplications lors de l'affichage
   modalContent.innerHTML = "";
 
@@ -204,124 +233,122 @@ async function deleteWork(workId) {
 }
 
 // Rafraîchit l'affichage des travaux quand nécessaire
-document
-  .getElementById("edit-works")
-  .addEventListener("click", displayWorksInModal);
+const editWorksButton = document.getElementById("edit-works");
+if (editWorksButton) {
+  editWorksButton.addEventListener("click", displayWorksInModal);
+}
 
 /////////////////////// FONCTIONS POUR LE FORMULAIRE D'AJOUT DES TRAVAUX //////////////////////////
 
-// Soumet les données du formulaire pour créer un nouveau travail
-async function submitAddWorkForm() {
-  const form = document.getElementById("formAddWork");
-  const submitButton = form.querySelector("button[type='submit']"); // Confirme le sélecteur du bouton
-
-  form.addEventListener("submit", async function (event) {
-    event.preventDefault(); // Empêche le rechargement de la page lors de la soumission
-    submitButton.disabled = true; // Désactive le bouton dès que le formulaire est soumis pour éviter les soumissions multiples
-
-    const formData = new FormData(form);
-
-    try {
-      const response = await fetch("http://localhost:5678/api/works", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`, // Authentification avec le token
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log("Success:", result);
-      await filterWorks(0); // Rafraîchit l'affichage des travaux
-      closeModal(event); // Ferme la modale après la soumission réussie
-    } catch (error) {
-      console.error("Error:", error);
-      submitButton.disabled = false; // Réactive le bouton en cas d'erreur pour permettre une nouvelle tentative
-    } finally {
-      globalWorks = null; // Réinitialise le cache après la soumission pour s'assurer que les données sont à jour
-      submitButton.disabled = false; // Réactive le bouton après la soumission
-    }
-  });
-}
-
-// Charge les catégories depuis l'API et les ajoute au sélecteur de catégories dans le formulaire
+// Fonction pour charger les catégories depuis l'API et les afficher dans le sélecteur
 async function loadCategories() {
   const categorySelect = document.getElementById("categoryInput");
+  if (!categorySelect) {
+    console.error("L'élément categoryInput n'a pas été trouvé.");
+    return;
+  }
+  categorySelect.innerHTML = ""; // Vide les options existantes
+
   try {
     const response = await fetch("http://localhost:5678/api/categories");
     const categories = await response.json();
 
+    // Ajoute une option par défaut
     const defaultOption = document.createElement("option");
-    defaultOption.textContent = "Choisissez une catégorie"; // Option par défaut
     defaultOption.value = "";
+    defaultOption.textContent = "Choisissez une catégorie";
     categorySelect.appendChild(defaultOption);
 
-    categorySelect.value = ""; // Sélectionne l'option par défaut initialement
-
+    // Ajoute les catégories au sélecteur
     categories.forEach((category) => {
       const option = document.createElement("option");
       option.value = category.id;
       option.textContent = category.name;
-      categorySelect.appendChild(option); // Ajoute chaque catégorie au sélecteur
+      categorySelect.appendChild(option);
     });
   } catch (error) {
     console.error("Erreur lors du chargement des catégories:", error);
   }
 }
 
-// Gère la soumission du formulaire en postant les données
-function setupFormSubmission() {
-  const formAddWork = document.getElementById("formAddWork");
-  formAddWork.addEventListener("submit", async (event) => {
-    event.preventDefault(); // Empêche le rechargement de la page lors de la soumission
-    const formData = new FormData(formAddWork);
+// Fonction pour soumettre le formulaire et ajouter un nouveau travail
+async function addWork(event) {
+  event.preventDefault(); // Empêche le rechargement de la page lors de la soumission
 
-    try {
-      const response = await fetch("http://localhost:5678/api/works", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`, // Authentification avec le token
-        },
-      });
+  const form = document.getElementById("formAddWork");
+  if (!form) {
+    console.error("Le formulaire d'ajout de travail n'a pas été trouvé.");
+    return;
+  }
+  const formData = new FormData(form);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+  try {
+    const response = await fetch("http://localhost:5678/api/works", {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`, // Authentification avec le token
+      },
+    });
 
-      const result = await response.json();
-      await displayWorksInModal(); // Met à jour l'affichage des travaux
-      await filterWorks(0); // Rafraîchit l'affichage des travaux
-      console.log("Projet ajouté avec succès:", result);
-      closeModal(event); // Ferme la modale après la soumission
-    } catch (error) {
-      console.error("Erreur lors de l'ajout du projet:", error);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  });
+
+    const result = await response.json();
+    console.log("Projet ajouté avec succès:", result);
+
+    // Réinitialise le cache des travaux
+    globalWorks = null;
+
+    // Met à jour l'affichage des travaux
+    await displayWorksInModal();
+    await displayFilteredWorks();
+
+    // Réinitialise le formulaire après la soumission
+    form.reset();
+    previewImage.style.display = "none"; // Cache l'aperçu de l'image
+
+    // Réaffiche les éléments initiaux
+    document.querySelector(".containerAddPhoto i").style.display = "block";
+    document.querySelector(".containerAddPhoto label").style.display = "block";
+    document.querySelector(".containerAddPhoto p").style.display = "block";
+
+    // Ferme la modale après la soumission
+    const modalAddWorks = document.getElementById("modalAddWork");
+    if (modalAddWorks) {
+      modalAddWorks.style.display = "none";
+    }
+    const modalPortfolio = document.getElementById("modalPortfolio");
+    if (modalPortfolio) {
+      modalPortfolio.style.display = "flex";
+    }
+    closeModal(event);
+  } catch (error) {
+    console.error("Erreur lors de l'ajout du projet:", error);
+  }
 }
 
 // Prévisualise l'image chargée avant l'envoi
-document.getElementById("file").addEventListener("change", function (event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const previewImage = document.getElementById("previewImage");
-      previewImage.src = e.target.result;
-      previewImage.style.display = "block"; // Affiche l'aperçu de l'image
+if (inputFile) {
+  inputFile.addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        previewImage.src = e.target.result;
+        previewImage.style.display = "block"; // Affiche l'aperçu de l'image
 
-      // Cache les éléments initiaux pour faire place à l'aperçu
-      document.querySelector(".containerAddPhoto i").style.display = "none";
-      document.querySelector(".containerAddPhoto label").style.display = "none";
-      document.querySelector(".containerAddPhoto p").style.display = "none";
-    };
-    reader.readAsDataURL(file);
-  }
-});
+        // Cache les éléments initiaux pour faire place à l'aperçu
+        document.querySelector(".containerAddPhoto i").style.display = "none";
+        document.querySelector(".containerAddPhoto label").style.display =
+          "none";
+        document.querySelector(".containerAddPhoto p").style.display = "none";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+}
 
 // Vérifie l'état du bouton de soumission en fonction de la complétude du formulaire
 document.addEventListener("DOMContentLoaded", () => {
@@ -331,63 +358,39 @@ document.addEventListener("DOMContentLoaded", () => {
   const addWorkButton = document.getElementById("addWorkButton");
 
   function updateButtonState() {
-    if (
-      titleInput.value.trim() !== "" &&
-      categorySelect.value &&
-      fileInput.files.length > 0
-    ) {
-      addWorkButton.disabled = false; // Active le bouton si toutes les conditions sont remplies
-      addWorkButton.style.backgroundColor = "#1d6154";
-      addWorkButton.style.color = "white";
-    } else {
-      addWorkButton.disabled = true; // Désactive le bouton si une condition n'est pas remplie
-      addWorkButton.style.backgroundColor = "#a7a7a7";
-      addWorkButton.style.color = "white";
+    if (titleInput && categorySelect && fileInput && addWorkButton) {
+      if (
+        titleInput.value.trim() !== "" &&
+        categorySelect.value &&
+        fileInput.files.length > 0
+      ) {
+        addWorkButton.disabled = false; // Active le bouton si toutes les conditions sont remplies
+        addWorkButton.style.backgroundColor = "#1d6154";
+        addWorkButton.style.color = "white";
+      } else {
+        addWorkButton.disabled = true; // Désactive le bouton si une condition n'est pas remplie
+        addWorkButton.style.backgroundColor = "#a7a7a7";
+        addWorkButton.style.color = "white";
+      }
     }
   }
 
-  titleInput.addEventListener("input", updateButtonState);
-  categorySelect.addEventListener("change", updateButtonState);
-  fileInput.addEventListener("change", updateButtonState);
+  if (titleInput) titleInput.addEventListener("input", updateButtonState);
+  if (categorySelect)
+    categorySelect.addEventListener("change", updateButtonState);
+  if (fileInput) fileInput.addEventListener("change", updateButtonState);
 
   // Initial check on load
   updateButtonState();
 });
 
-// Réinitialise les écouteurs d'événements pour les boutons de la modale pour éviter les doubles écoutes
-function setupModalButtons() {
-  const addPhotoButton = document.getElementById("addPhotoButton");
-  addPhotoButton.removeEventListener("click", openAddWorkModal);
-  addPhotoButton.addEventListener("click", openAddWorkModal);
-
-  const backButton = document.querySelector(".js-modal-back");
-  backButton.removeEventListener("click", backToGalleryModal);
-  backButton.addEventListener("click", backToGalleryModal);
-}
-
-// Ferme la modale d'ajout de travail
-function setupCloseButtonForAddWorkModal() {
-  const closeButton = document.querySelector(".js-modal-close");
-  closeButton.addEventListener("click", closeModal);
-}
-
-function setupBackgroundClickForAddWorkModal() {
-  const modals = document.querySelectorAll(".modal");
-
-  modals.forEach((element) => {
-    element.addEventListener("click", function (event) {
-      if (event.target === modal) {
-        closeModal();
-      }
-    });
-  });
-}
-
 // S'assure que les boutons sont configurés dès que le DOM est chargé
 document.addEventListener("DOMContentLoaded", async function () {
   setupModalButtons(); // Configure déjà les boutons pour les autres modales
-  setupCloseButtonForAddWorkModal(); // Configure le bouton de fermeture pour modalAddWork
-  setupBackgroundClickForAddWorkModal(); // Configure la fermeture en cliquant à l'extérieur pour modalAddWork
   await loadCategories(); // Charge les catégories disponibles
-  setupFormSubmission(); // Configure la soumission du formulaire
+
+  const formAddWorks = document.getElementById("formAddWork");
+  if (formAddWorks) {
+    formAddWorks.addEventListener("submit", addWork); // Configure la soumission du formulaire
+  }
 });
