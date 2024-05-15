@@ -1,5 +1,3 @@
-//////////////////////////////////// MODAL ////////////////////////////////////
-
 // Déclaration de variables pour la gestion des modales
 let modal = null;
 const focusableSelector = "button, a, input, textarea"; // Sélecteurs pour éléments focusables dans la modale
@@ -45,15 +43,10 @@ const closeModal = function (e) {
   console.log("closeModal");
   if (e && e.preventDefault) e.preventDefault(); // Empêche le comportement par défaut lors de la fermeture
   if (!modal) return;
-
   modal.style.display = "none";
   modal.setAttribute("aria-hidden", "true");
   modal.removeAttribute("aria-modal");
   document.removeEventListener("keydown", handleKeyDown);
-  modal
-    .querySelector(".js-modal-close")
-    .removeEventListener("click", closeModal);
-  modal.removeEventListener("click", closeModal);
   modal
     .querySelector(".modal-wrapper")
     .removeEventListener("click", stopPropagation);
@@ -99,11 +92,16 @@ if (
 
 /////////////////////////// FONCTIONS CHANGEMENT DE MODALES //////////////////////////
 
+function updateModalHandler(modalActive) {
+  modal = modalActive; // Modifie la référence de la modale active
+  modal.querySelector(".js-modal-close").addEventListener("click", closeModal); // Bouton de fermeture
+}
+
 // Fonction pour ouvrir la modale d'ajout de travail
 function openAddWorkModal() {
   const modalAddWork = document.getElementById("modalAddWork");
   document.getElementById("modalGallery").style.display = "none"; // Cache la modale principale
-  modal = modalAddWork; // Modifie la référence de la modale active
+  updateModalHandler(modalAddWork);
   modalAddWork.style.display = "flex"; // Affiche la modale
   modalAddWork.setAttribute("aria-hidden", "false"); // Accessibilité : rend la modale visible aux technologies d'assistance
   modalAddWork.setAttribute("aria-modal", "true"); // Indique que c'est une modale
@@ -114,6 +112,7 @@ function backToGalleryModal() {
   const modalAddWork = document.getElementById("modalAddWork");
   modalAddWork.style.display = "none"; // Cache la modale d'ajout
   const modalGallery = document.getElementById("modalGallery");
+  updateModalHandler(modalGallery);
   modalGallery.style.display = "flex"; // Affiche la modale principale
 }
 
@@ -197,8 +196,8 @@ async function deleteWork(workId) {
     // Si la réponse n'est pas OK, lance une exception
     if (!response.ok) throw new Error("Failed to delete work"); // Gère les réponses non réussies
     globalWorks = null; // Réinitialise le cache des travaux
-    displayWorksInModal(); // Met à jour l'affichage sans rechargement de la page
-    displayFilteredWorks(); // Rafraîchit l'affichage des travaux
+    await displayWorksInModal(); // Met à jour l'affichage sans rechargement de la page
+    await displayFilteredWorks(); // Rafraîchit l'affichage des travaux
   } catch (error) {
     console.error("Erreur lors de la suppression:", error); // Log en cas d'erreur
   }
@@ -237,7 +236,7 @@ async function submitAddWorkForm() {
 
       const result = await response.json();
       console.log("Success:", result);
-      filterWorks(0); // Rafraîchit l'affichage des travaux
+      await filterWorks(0); // Rafraîchit l'affichage des travaux
       closeModal(event); // Ferme la modale après la soumission réussie
     } catch (error) {
       console.error("Error:", error);
@@ -295,8 +294,8 @@ function setupFormSubmission() {
       }
 
       const result = await response.json();
-      displayWorksInModal(); // Met à jour l'affichage des travaux
-      filterWorks(0); // Rafraîchit l'affichage des travaux
+      await displayWorksInModal(); // Met à jour l'affichage des travaux
+      await filterWorks(0); // Rafraîchit l'affichage des travaux
       console.log("Projet ajouté avec succès:", result);
       closeModal(event); // Ferme la modale après la soumission
     } catch (error) {
@@ -373,23 +372,22 @@ function setupCloseButtonForAddWorkModal() {
 }
 
 function setupBackgroundClickForAddWorkModal() {
-  const modal = document.querySelector(".modal");
-  modal.addEventListener("click", function (event) {
-    if (event.target === modal) {
-      closeModal();
-    }
+  const modals = document.querySelectorAll(".modal");
+
+  modals.forEach((element) => {
+    element.addEventListener("click", function (event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
   });
 }
 
 // S'assure que les boutons sont configurés dès que le DOM est chargé
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   setupModalButtons(); // Configure déjà les boutons pour les autres modales
   setupCloseButtonForAddWorkModal(); // Configure le bouton de fermeture pour modalAddWork
   setupBackgroundClickForAddWorkModal(); // Configure la fermeture en cliquant à l'extérieur pour modalAddWork
-});
-
-// Initialise les fonctions au chargement de la page
-document.addEventListener("DOMContentLoaded", () => {
-  loadCategories(); // Charge les catégories disponibles
+  await loadCategories(); // Charge les catégories disponibles
   setupFormSubmission(); // Configure la soumission du formulaire
 });
