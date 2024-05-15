@@ -51,10 +51,6 @@ const closeModal = function (e) {
   modal.removeAttribute("aria-modal");
   document.removeEventListener("keydown", handleKeyDown);
   modal
-    .querySelector(".js-modal-close")
-    .removeEventListener("click", closeModal);
-  modal.removeEventListener("click", closeModal);
-  modal
     .querySelector(".modal-wrapper")
     .removeEventListener("click", stopPropagation);
   modal = null;
@@ -99,11 +95,16 @@ if (
 
 /////////////////////////// FONCTIONS CHANGEMENT DE MODALES //////////////////////////
 
+function updateModalHandler(modalActive) {
+  modal = modalActive; // Modifie la référence de la modale active
+  modal.querySelector(".js-modal-close").addEventListener("click", closeModal); // Bouton de fermeture
+}
+
 // Fonction pour ouvrir la modale d'ajout de travail
 function openAddWorkModal() {
   const modalAddWork = document.getElementById("modalAddWork");
   document.getElementById("modalGallery").style.display = "none"; // Cache la modale principale
-  modal = modalAddWork; // Modifie la référence de la modale active
+  updateModalHandler(modalAddWork);
   modalAddWork.style.display = "flex"; // Affiche la modale
   modalAddWork.setAttribute("aria-hidden", "false"); // Accessibilité : rend la modale visible aux technologies d'assistance
   modalAddWork.setAttribute("aria-modal", "true"); // Indique que c'est une modale
@@ -114,6 +115,7 @@ function backToGalleryModal() {
   const modalAddWork = document.getElementById("modalAddWork");
   modalAddWork.style.display = "none"; // Cache la modale d'ajout
   const modalGallery = document.getElementById("modalGallery");
+  updateModalHandler(modalGallery);
   modalGallery.style.display = "flex"; // Affiche la modale principale
 }
 
