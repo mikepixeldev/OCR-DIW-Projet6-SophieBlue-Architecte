@@ -101,7 +101,9 @@ async function submitAddWorkForm() {
 
       const result = await response.json();
       console.log("Success:", result);
-      await filterWorks(0); // Rafraîchit l'affichage des travaux
+      globalWorks = null; // Réinitialise le cache après ajout pour garantir que les données sont à jour
+      await filterWorks(0); // Rafraîchit l'affichage des travaux dans la modale
+      await displayFilteredWorks(); // Rafraîchit l'affichage des travaux dans la galerie principale
       closeModal(event); // Ferme la modale après la soumission réussie
     } catch (error) {
       console.error("Error:", error);
@@ -159,8 +161,9 @@ function setupFormSubmission() {
       }
 
       const result = await response.json();
-      await displayWorksInModal(); // Met à jour l'affichage des travaux
-      await filterWorks(0); // Rafraîchit l'affichage des travaux
+      await displayWorksInModal(); // Met à jour l'affichage des travaux dans la modale
+      await filterWorks(0); // Rafraîchit l'affichage des travaux dans la modale
+      await displayFilteredWorks(); // Rafraîchit l'affichage des travaux dans la galerie principale
       console.log("Projet ajouté avec succès:", result);
       closeModal(event); // Ferme la modale après la soumission
     } catch (error) {
