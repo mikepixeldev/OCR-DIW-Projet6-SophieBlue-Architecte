@@ -29,7 +29,6 @@ function setupModalOnce() {
     isModalSetup = true; // Marque la modale comme configurée
   }
 }
-
 // Attache la fonction de configuration au chargement du DOM
 document.addEventListener("DOMContentLoaded", setupModalOnce);
 
@@ -105,7 +104,6 @@ function updateModalHandler(modalActive) {
     closeModalButton.addEventListener("click", closeModal); // Bouton de fermeture
   }
 }
-
 // Fonction pour ouvrir la modale d'ajout de travail
 function openAddWorkModal() {
   const modalAddWork = document.getElementById("modalAddWork");
@@ -208,7 +206,6 @@ async function displayWorksInModal() {
     }
   });
 }
-
 ////////////////////// FONCTION DELETE //////////////////////
 
 // Fonction asynchrone pour supprimer un travail par son identifiant
