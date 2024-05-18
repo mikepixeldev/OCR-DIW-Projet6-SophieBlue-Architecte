@@ -34,7 +34,6 @@ async function getCategories() {
   console.log(categoriesJson);
   return categoriesJson;
 }
-
 // Fonction pour afficher les catégories dans l'interface utilisateur.
 async function displayCategories() {
   const categories = await getCategories();
@@ -145,11 +144,13 @@ function adjustDisplayBasedOnLogin() {
   const editWorks = document.getElementById("edit-works");
   const filterContainer = document.getElementById("filter-container");
 
+  // Si l'utilisateur est connecté, affiche les éléments d'édition et masque le conteneur de filtres
   if (loggedIn) {
     headerEdit.style.display = "flex";
     editWorks.style.display = "block";
     filterContainer.style.display = "none";
   } else {
+    // Sinon, masque les éléments d'édition et affiche le conteneur de filtres
     headerEdit.style.display = "none";
     editWorks.style.display = "none";
     filterContainer.style.display = "flex";
